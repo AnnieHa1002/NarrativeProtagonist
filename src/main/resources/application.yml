@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: narrative-protagonist
+
+  # ?? ?? ?? ??
+  datasource:
+    url: jdbc:postgresql://localhost:5432/narrative_protagonist
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # first database create
+#      ddl-auto: validate  # Flyway ??
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Flyway ??
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    sql-migration-suffixes: .sql
+    baseline-version: 0
+
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.narrativeprotagonist: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG          # SQL ??
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # ??? ????

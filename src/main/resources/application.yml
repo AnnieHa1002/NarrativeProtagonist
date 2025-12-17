@@ -50,8 +50,10 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # ??? ????
 
 jwt:
-  secret: ${JWT_SECRET}
-  expiration: 86400000 # 24시간
+  access-secret: ${JWT_ACCESS_SECRET}
+  refresh-secret: ${JWT_REFRESH_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24시간 (기본값)
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7일 (기본값)
 
 app:
   email:

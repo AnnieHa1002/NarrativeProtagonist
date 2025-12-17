@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #666;
+        }
+        .link {
+            word-break: break-all;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="#{email.verification.subject}">NarrativeProtagonist 이메일 인증</h2>
+        <p th:text="#{email.verification.greeting}">안녕하세요!</p>
+        <p th:text="#{email.verification.instruction}">아래 버튼을 클릭하여 이메일을 인증하세요.</p>
+
+        <a th:href="${verificationLink}" class="button" th:text="#{email.verification.button}">이메일 인증하기</a>
+
+        <p th:text="#{email.verification.alternative}">또는 아래 링크를 복사하여 브라우저에 붙여넣으세요:</p>
+        <p class="link"><a th:href="${verificationLink}" th:text="${verificationLink}"></a></p>
+
+        <div class="footer">
+            <p th:text="#{email.verification.expiry}">이 링크는 15분간 유효합니다.</p>
+        </div>
+    </div>
+</body>
+</html>

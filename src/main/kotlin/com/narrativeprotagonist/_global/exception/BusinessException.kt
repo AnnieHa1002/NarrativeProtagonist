@@ -36,32 +36,56 @@ sealed class BusinessException(
         messageKey = "error.auth.invalidToken"
     )
 
-    data object TokenExpired : BusinessException(
+    data object AccessTokenExpired : BusinessException(
         code = "AUTH_002",
         status = HttpStatus.UNAUTHORIZED,
         message = "Token has expired",
         messageKey = "error.auth.tokenExpired"
-    )
+    ) {
+        private fun readResolve(): Any = AccessTokenExpired
+    }
 
-    data class InvalidCredentials(val email: String) : BusinessException(
+    data object RefreshTokenExpired : BusinessException(
         code = "AUTH_003",
+        status = HttpStatus.UNAUTHORIZED,
+        message = "Token has expired",
+        messageKey = "error.auth.tokenExpired"
+    ) {
+        private fun readResolve(): Any = RefreshTokenExpired
+    }
+    data object TokenExpired : BusinessException(
+        code = "AUTH_004",
+        status = HttpStatus.UNAUTHORIZED,
+        message = "Token has expired",
+        messageKey = "error.auth.tokenExpired"
+    ) {
+        private fun readResolve(): Any = AccessTokenExpired
+    }
+    data class InvalidCredentials(val email: String) : BusinessException(
+        code = "AUTH_005",
         status = HttpStatus.UNAUTHORIZED,
         message = "Invalid credentials for: $email",
         messageKey = "error.auth.invalidCredentials"
     )
 
     data class VerificationExpired(val email: String) : BusinessException(
-        code = "AUTH_004",
+        code = "AUTH_006",
         status = HttpStatus.BAD_REQUEST,
         message = "Verification link has expired for: $email",
         messageKey = "error.auth.verificationExpired"
     )
 
     data class UserNotVerified(val email: String) : BusinessException(
-        code = "AUTH_005",
+        code = "AUTH_007",
         status = HttpStatus.FORBIDDEN,
         message = "User not verified: $email",
         messageKey = "error.auth.userNotVerified"
+    )
+    data class TooManyLoginRequests(val retryAfterSeconds: Long) : BusinessException(
+        code = "AUTH_008",
+        status = HttpStatus.TOO_MANY_REQUESTS,
+        message = "Too many login requests. Retry after $retryAfterSeconds seconds.",
+        messageKey = "error.auth.tooManyLoginRequests"
     )
 
     // ============ Project 도메인 ============

@@ -31,8 +31,8 @@
        │               ↓
        ↓         Response: { "success": true }
 ┌──────────────┐
-│  프론트엔드   │ → Polling이 JWT 받음
-│  (로그인창)  │    { "status": "SUCCESS", "jwtToken": "..." }
+│  프론트엔드   │ → Polling이 SUCCESS 받음 (JWT는 쿠키로 자동 전달)
+│  (로그인창)  │    { "status": "SUCCESS" }
 └──────┬───────┘
        │
        ↓
@@ -56,8 +56,7 @@ Content-Type: application/json
 {
   "success": true,
   "data": {
-    "loginTokenId": "uuid-abc-123",
-    "message": "이메일을 확인해주세요"
+    "loginTokenId": "uuid-abc-123"
   }
 }
 ```
@@ -72,38 +71,32 @@ GET /api/auth/login-status/{loginTokenId}
 {
   "success": true,
   "data": {
-    "status": "PENDING",
-    "jwtToken": null,
-    "message": "이메일 확인 대기 중"
+    "status": "PENDING"
   }
 }
 ```
 
 **Response (완료):**
+HttpOnly 쿠키로 토큰 전달. 
 ```json
 {
   "success": true,
   "data": {
     "status": "SUCCESS",
-    "jwtToken": "eyJhbGciOiJIUzI1NiJ9...",
-    "message": "로그인 완료"
   }
 }
 ```
 
 ### 3. 이메일 링크 검증
 ```http
-GET /api/auth/verify-login?token={magic-link-token}
+GET /api/auth/verify-login?token={loginTokenId}
 ```
 
 **Response:**
 ```json
 {
   "success": true,
-  "data": {
-    "success": true,
-    "message": "로그인이 완료되었습니다. 원래 창으로 돌아가주세요."
-  }
+  "data":null
 }
 ```
 
@@ -138,13 +131,13 @@ function LoginPage() {
     if (!isPolling || !loginTokenId) return;
 
     const interval = setInterval(async () => {
-      const response = await fetch(`/api/auth/login-status/${loginTokenId}`);
+      const response = await fetch(`/api/auth/login-status/${loginTokenId}`, {
+        credentials: 'include'  // 쿠키 포함
+      });
       const data = await response.json();
 
       if (data.data.status === 'SUCCESS') {
-        // JWT 저장
-        localStorage.setItem('accessToken', data.data.jwtToken);
-
+        // JWT는 HttpOnly 쿠키로 자동 저장됨
         // 로그인 완료!
         setIsPolling(false);
         window.location.href = '/dashboard';
@@ -213,11 +206,13 @@ export default {
 
     startPolling() {
       this.pollInterval = setInterval(async () => {
-        const response = await fetch(`/api/auth/login-status/${this.loginTokenId}`);
+        const response = await fetch(`/api/auth/login-status/${this.loginTokenId}`, {
+          credentials: 'include'  // 쿠키 포함
+        });
         const data = await response.json();
 
         if (data.data.status === 'SUCCESS') {
-          localStorage.setItem('accessToken', data.data.jwtToken);
+          // JWT는 HttpOnly 쿠키로 자동 저장됨
           this.isPolling = false;
           clearInterval(this.pollInterval);
           this.$router.push('/dashboard');
@@ -263,21 +258,37 @@ export default {
 
 ## 보안 고려사항
 
-1. **토큰 만료**: 10분 후 자동 만료
-2. **1회 사용**: 한 번 사용한 토큰은 재사용 불가
-3. **HTTPS 필수**: 프로덕션에서는 HTTPS만 사용
-4. **Rate Limiting**: Polling 요청에 rate limit 적용
+1. **토큰 만료**: LoginToken 10분 후 자동 만료
+2. **1회 사용**: 한 번 사용한 토큰은 재사용 불가 (used 플래그)
+3. **HTTPS 필수**: 프로덕션에서는 HTTPS만 사용 (Secure 쿠키)
+4. **HttpOnly 쿠키**: JWT를 HttpOnly 쿠키로 전달하여 XSS 공격 방지
+5. **SHA-256 해시**: Refresh Token을 데이터베이스에 저장 시 SHA-256으로 해싱
+6. **분리된 시크릿**: Access Token과 Refresh Token에 각각 다른 시크릿 키 사용
+7. **이메일 재전송 제한**: 1분 이내 재전송 불가 (Brute Force 방어)
+
+### 향후 보안 강화 계획
+- **Rate Limiting**: 로그인 시도 횟수 제한 추가 예정 (Brute Force 방어 강화)
 
 ## 데이터베이스 스키마
 
 ```sql
 CREATE TABLE login_token (
     id VARCHAR(255) PRIMARY KEY,
-    token VARCHAR(255) UNIQUE NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     expires_at BIGINT NOT NULL,
-    used BOOLEAN DEFAULT FALSE,
-    jwt_token VARCHAR(1000),  -- JWT 저장
+    verified BOOLEAN DEFAULT FALSE,  -- 이메일 링크 클릭 여부
+    used BOOLEAN DEFAULT FALSE,       -- 토큰 사용 여부
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE TABLE refresh_token (
+    id VARCHAR(255) PRIMARY KEY,
+    session_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    token_hash VARCHAR(64) NOT NULL,  -- SHA-256 해시 (64자)
+    expires_at TIMESTAMP NOT NULL,
+    revoked BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );

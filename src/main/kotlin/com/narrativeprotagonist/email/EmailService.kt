@@ -1,7 +1,7 @@
 package com.narrativeprotagonist.email
 
 import com.narrativeprotagonist._global.config.EmailProperties
-import com.narrativeprotagonist.user.domain.LoginToken
+import com.narrativeprotagonist.auth.domain.LoginToken
 import jakarta.mail.internet.MimeMessage
 import org.springframework.context.MessageSource
 import org.springframework.mail.javamail.JavaMailSender
@@ -36,6 +36,21 @@ class EmailService(
         return expiredAt
     }
 
+    /**
+     * 로그인 매직 링크 메일 발송
+     */
+    fun sendSignInEmail(to: String, locale: Locale = Locale.KOREAN, loginToken: String) {
+        val loginUrl = "${emailProperties.baseUrl}/api/auth/verify-login?token=$loginToken"
+
+        val context = Context(locale).apply {
+            setVariable("loginUrl", loginUrl)
+        }
+
+        val subject = messageSource.getMessage("email.login.subject", null, locale)
+        val content = templateEngine.process("email/login", context)
+
+        sendHtmlEmail(to, subject, content)
+    }
 
     private fun sendHtmlEmail(to: String, subject: String, content: String) {
         val message: MimeMessage = mailSender.createMimeMessage()

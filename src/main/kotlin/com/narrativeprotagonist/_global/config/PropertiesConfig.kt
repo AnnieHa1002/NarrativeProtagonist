@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @EnableConfigurationProperties(
     EmailProperties::class,
+    JwtProperties::class
     // 여기에 새로운 Properties 추가
 )
 class PropertiesConfig

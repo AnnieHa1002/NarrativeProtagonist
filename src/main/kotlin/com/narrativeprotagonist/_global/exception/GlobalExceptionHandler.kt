@@ -1,5 +1,7 @@
 package com.narrativeprotagonist._global.exception
 
+import com.narrativeprotagonist._global.constants.AppConstants.Jwt.CLAIM_EMAIL
+import com.narrativeprotagonist._global.constants.AppConstants.Jwt.CLAIM_USER_ID
 import com.narrativeprotagonist._global.response.ApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
@@ -42,8 +44,8 @@ class GlobalExceptionHandler(
      * 예외별 추가 정보 추출
      */
     private fun getExceptionDetails(e: BusinessException): Map<String, Any?> = when (e) {
-        is BusinessException.UserNotFound -> mapOf("userId" to e.userId)
-        is BusinessException.DuplicateEmail -> mapOf("email" to e.email)
+        is BusinessException.UserNotFound -> mapOf(CLAIM_USER_ID to e.userId)
+        is BusinessException.DuplicateEmail -> mapOf(CLAIM_EMAIL to e.email)
         is BusinessException.ProjectNotFound -> mapOf("projectId" to e.projectId)
         is BusinessException.UnauthorizedAccess -> mapOf(
             "resourceType" to e.resourceType,

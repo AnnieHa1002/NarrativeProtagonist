@@ -1,16 +1,11 @@
 package com.narrativeprotagonist.auth.controller
 
 import com.narrativeprotagonist._global.config.CookieProperties
-import com.narrativeprotagonist._global.enums.SignInStatusType
 import com.narrativeprotagonist._global.constants.AppConstants
+import com.narrativeprotagonist._global.enums.SignInStatusType
 import com.narrativeprotagonist._global.response.ApiResponse
+import com.narrativeprotagonist.auth.dto.*
 import com.narrativeprotagonist.auth.service.AuthService
-import com.narrativeprotagonist.auth.dto.SignInRequest
-import com.narrativeprotagonist.auth.dto.SignInRequestResponse
-import com.narrativeprotagonist.auth.dto.SignInStatusResponse
-import com.narrativeprotagonist.auth.dto.SignUpRequest
-import com.narrativeprotagonist.auth.dto.SignUpResponse
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseCookie
 import org.springframework.web.bind.annotation.*

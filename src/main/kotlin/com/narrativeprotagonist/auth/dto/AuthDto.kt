@@ -27,6 +27,7 @@ data class SignInRequestResponse(
 data class SignInStatusResponse(
     val status: SignInStatusType,  // PENDING, SUCCESS
 )
+
 data class SignInStatus(
     val status: SignInStatusType,  // PENDING, SUCCESS
     val tokens: JwtTokens?,

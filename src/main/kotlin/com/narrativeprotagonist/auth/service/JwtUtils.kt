@@ -1,6 +1,7 @@
 package com.narrativeprotagonist.auth.service
 
 import com.narrativeprotagonist._global.config.JwtProperties
+import com.narrativeprotagonist._global.constants.AppConstants.Jwt.CLAIM_NICKNAME
 import com.narrativeprotagonist._global.enums.JwtTokenType
 import com.narrativeprotagonist._global.exception.BusinessException
 import com.narrativeprotagonist.user.domain.User
@@ -41,7 +42,7 @@ class JwtUtils(
         val expiryDate = Date(now.time + expirationTime)
         val token = Jwts.builder()
             .subject(userId)  // sub: userId
-            .claim("nickname", user.nickname)
+            .claim(CLAIM_NICKNAME, user.nickname)
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(secretKey)

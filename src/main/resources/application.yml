@@ -41,3 +41,27 @@ logging:
     org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG          # SQL ??
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # ??? ????
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  info:
+    title: Narrative Protagonist API
+    description: Interactive narrative platform API documentation
+    version: 1.0.0
+    contact:
+      name: Narrative Protagonist Team
+      email: support@narrativeprotagonist.com
+  servers:
+    - url: ${API_SERVER_URL:http://localhost:8080}
+      description: ${API_SERVER_DESCRIPTION:Local Development}

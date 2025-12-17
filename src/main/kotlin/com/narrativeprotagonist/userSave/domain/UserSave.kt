@@ -1,8 +1,7 @@
-package com.narrativeprotagonist.variable
+package com.narrativeprotagonist.userSave.domain
 
 import com.narrativeprotagonist._global.timestamp.Timestamped
-import com.narrativeprotagonist.project.Project
-import com.narrativeprotagonist.userSave.UserSave
+import com.narrativeprotagonist.user.domain.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -12,19 +11,21 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 
 @Entity
-class VariableLog (
+class UserSave (
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: String? = null,
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    var userSave: UserSave? = null,
-    var key : String = "",
+    val user: User? = null,
+    val projectId : String? = null,
+    val currentNodeId: String? = null,
     @Column(columnDefinition = "jsonb")
-    var oldValue : String = "",
+    val variables : String? = null,
     @Column(columnDefinition = "jsonb")
-    var newValue : String = "",
-    var nodeId : String = "",
+    val items : String? = null,
+    @Column(columnDefinition = "jsonb")
+    val history : String? = null,
+
 ) : Timestamped()

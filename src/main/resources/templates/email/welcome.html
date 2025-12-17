@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .highlight {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="#{email.welcome.title}">환영합니다! 🎉</h2>
+        <p th:text="#{email.welcome.thanks}">NarrativeProtagonist에 가입해주셔서 감사합니다.</p>
+
+        <div class="highlight">
+            <p><strong th:text="#{email.welcome.start.title}">시작하기:</strong></p>
+            <ul>
+                <li th:text="#{email.welcome.start.point1}">나만의 인터랙티브 스토리를 만들 수 있습니다</li>
+                <li th:text="#{email.welcome.start.point2}">기본 샌드박스가 생성되었습니다</li>
+                <li th:text="#{email.welcome.start.point3}">첫 프로젝트를 시작해보세요!</li>
+            </ul>
+        </div>
+
+        <p th:text="#{email.welcome.contact}">궁금한 점이 있으시면 언제든지 문의해주세요.</p>
+    </div>
+</body>
+</html>

@@ -1,8 +1,8 @@
-package com.narrativeprotagonist.node
+package com.narrativeprotagonist.node.domain
 
 import com.narrativeprotagonist._global.enums.NodeType
 import com.narrativeprotagonist._global.timestamp.Timestamped
-import com.narrativeprotagonist.project.Project
+import com.narrativeprotagonist.project.domain.Project
 import jakarta.persistence.*
 
 @Entity

@@ -67,7 +67,7 @@ class JwtUtils(
         }
         // 만료시 만료 에러
         catch (e: io.jsonwebtoken.ExpiredJwtException) {
-            if (tokenType == JwtTokenType.REFRESH)
+            if (tokenType == JwtTokenType.ACCESS)
                 throw BusinessException.AccessTokenExpired;
             else
                 throw BusinessException.RefreshTokenExpired;

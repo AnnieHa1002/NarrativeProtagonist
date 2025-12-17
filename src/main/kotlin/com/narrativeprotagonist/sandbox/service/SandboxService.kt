@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional
 class SandboxService(
     private val sandboxRepository: SandboxRepository
 ) {
+    fun getSandboxByUserId (userId: String): Sandbox? {
+        return sandboxRepository.findByUserId(userId)
+    }
     fun createSandboxForUser(user: User) {
         sandboxRepository.save(Sandbox(user))
     }

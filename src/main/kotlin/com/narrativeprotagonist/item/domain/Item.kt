@@ -1,7 +1,7 @@
-package com.narrativeprotagonist.variable
+package com.narrativeprotagonist.item.domain
 
 import com.narrativeprotagonist._global.timestamp.Timestamped
-import com.narrativeprotagonist.project.Project
+import com.narrativeprotagonist.project.domain.Project
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -9,18 +9,25 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import java.sql.Time
 
 @Entity
-class Variable (
+class Item  (
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: String? = null,
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     var project: Project? = null,
-    var key : String = "",
+    var name : String = "",
+    var description : String = "",
+
     @Column(columnDefinition = "jsonb")
-    var value : String = "",
+    var conditions : String? = null,
+
+    @Column(columnDefinition = "jsonb")
+    var effect : String? = null,
+
+
 ) : Timestamped()

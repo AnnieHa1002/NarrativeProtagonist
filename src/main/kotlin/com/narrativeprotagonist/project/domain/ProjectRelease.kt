@@ -1,33 +1,25 @@
-package com.narrativeprotagonist.item
+package com.narrativeprotagonist.project.domain
 
 import com.narrativeprotagonist._global.timestamp.Timestamped
-import com.narrativeprotagonist.project.Project
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import java.sql.Time
 
 @Entity
-class Item  (
+class ProjectRelease(
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    var project: Project? = null,
-    var name : String = "",
-    var description : String = "",
+    @JoinColumn(name = "project_id")
+    val project: Project? = null,
 
-    @Column(columnDefinition = "jsonb")
-    var conditions : String? = null,
-
-    @Column(columnDefinition = "jsonb")
-    var effect : String? = null,
-
-
+    val version: Int = 0,
 ) : Timestamped()
+

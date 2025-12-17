@@ -1,20 +1,21 @@
-package com.narrativeprotagonist.sandbox
+package com.narrativeprotagonist.userSave.domain
 
 import com.narrativeprotagonist._global.timestamp.Timestamped
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 
 @Entity
-class Sandbox(
+class EventLog (
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: String? = null,
-
-    val userId: String = "",
-    val title: String = ""
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    val userSave : UserSave? = null,
+    val nodeId : String = "",
+    val occurred : Boolean = false,
 ) : Timestamped()

@@ -29,4 +29,6 @@ class UserService(
         return userRepository.save(User(null, email, nickname = request.nickname))
     }
 
+    fun getAllUsers(): List<User> =
+        userRepository.findAll()
 }

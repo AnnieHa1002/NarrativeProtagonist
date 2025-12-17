@@ -52,6 +52,18 @@ class EmailService(
         sendHtmlEmail(to, subject, content)
     }
 
+    /**
+     * 회원가입 환영 메일 발송
+     */
+    fun sendWelcomeEmail(to: String, locale: Locale = Locale.KOREAN) {
+        val context = Context(locale)
+
+        val subject = messageSource.getMessage("email.welcome.subject", null, locale)
+        val content = templateEngine.process("email/welcome", context)
+
+        sendHtmlEmail(to, subject, content)
+    }
+
     private fun sendHtmlEmail(to: String, subject: String, content: String) {
         val message: MimeMessage = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true, "UTF-8")

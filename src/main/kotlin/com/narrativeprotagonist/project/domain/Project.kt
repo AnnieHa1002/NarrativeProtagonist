@@ -1,7 +1,7 @@
-package com.narrativeprotagonist.project
+package com.narrativeprotagonist.project.domain
 
 import com.narrativeprotagonist._global.timestamp.Timestamped
-import com.narrativeprotagonist.sandbox.Sandbox
+import com.narrativeprotagonist.sandbox.domain.Sandbox
 import jakarta.persistence.*
 
 @Entity

@@ -1,10 +1,17 @@
 spring:
   application:
     name: narrative-protagonist
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
   # ?? ?? ?? ??
   datasource:
-    url: jdbc:postgresql://localhost:5432/narrative_protagonist
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -41,6 +48,17 @@ logging:
     org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG          # SQL ??
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # ??? ????
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000 # 24시간
+
+app:
+  email:
+    from: ${EMAIL_FROM:noreply@narrativeprotagonist.com}
+    base-url: ${BASE_URL:http://localhost:8080}
+  cookie:
+    secure: ${COOKIE_SECURE:false}  # production에서는 true
 
 springdoc:
   api-docs:

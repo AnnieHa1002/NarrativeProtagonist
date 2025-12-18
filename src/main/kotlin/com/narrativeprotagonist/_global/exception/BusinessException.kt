@@ -117,6 +117,16 @@ sealed class BusinessException(
         message = "Sandbox not found for user: $userId",
         messageKey = "error.sandbox.userSandboxNotFound"
     )
+
+    //=========== Node  ============
+    data class NodeNotFound(val nodeId: String) : BusinessException(
+        code = "NODE_001",
+        status = HttpStatus.NOT_FOUND,
+        message = "Node not found: $nodeId",
+        messageKey = "error.node.notFound"
+    )
+
+
     // ============ Common ============
     data class InvalidArgument(val field: String, val reason: String) : BusinessException(
         code = "COMMON_001",
@@ -130,5 +140,12 @@ sealed class BusinessException(
         status = HttpStatus.NOT_FOUND,
         message = "$resourceType not found: $resourceId",
         messageKey = "error.common.resourceNotFound"
+    )
+
+    data class UnauthorizedAction(val reason: String) : BusinessException(
+        code = "COMMON_003",
+        status = HttpStatus.FORBIDDEN,
+        message = "Unauthorized action: $reason",
+        messageKey = "error.common.unauthorizedAction"
     )
 }

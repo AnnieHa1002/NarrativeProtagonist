@@ -13,6 +13,7 @@ class Sandbox(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     var id: String? = null,
+
     val userId: String? = "",
     var title: String = ""
 

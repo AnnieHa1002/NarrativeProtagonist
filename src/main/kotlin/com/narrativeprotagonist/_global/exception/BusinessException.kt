@@ -111,6 +111,12 @@ sealed class BusinessException(
         messageKey = "error.sandbox.notFound"
     )
 
+    data class UserSandboxNotFound(val userId: String) : BusinessException(
+        code = "SANDBOX_002",
+        status = HttpStatus.NOT_FOUND,
+        message = "Sandbox not found for user: $userId",
+        messageKey = "error.sandbox.userSandboxNotFound"
+    )
     // ============ Common ============
     data class InvalidArgument(val field: String, val reason: String) : BusinessException(
         code = "COMMON_001",

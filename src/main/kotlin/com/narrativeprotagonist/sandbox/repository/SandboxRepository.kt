@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 interface SandboxRepository : JpaRepository<Sandbox, String> {
 
     fun findByUserId(userId: String): Sandbox?
-    // TODO: 추가 쿼리 메서드 작성
+    fun findAllByUserId(userId: String): List<Sandbox>
 }

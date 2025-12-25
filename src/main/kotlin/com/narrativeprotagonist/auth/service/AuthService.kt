@@ -61,18 +61,16 @@ class AuthService(
             throw BusinessException.UserNotVerified(email)
         }
         checkIfMailSentIn1min(user.id!!)
-
+        loginTokenRepository.invalidateAllByUserId(user.id!!)
         // LoginToken 생성 (10분 만료)
-        val token = UUID.randomUUID().toString()
         val loginToken = LoginToken(
             userId = user.id!!,
             expiresAt = System.currentTimeMillis() + 10 * 60 * 1000  // 10분
         )
-        loginTokenRepository.invalidateAllByUserId(user.id!!)
         loginTokenRepository.save(loginToken)
 
         // 이메일 발송
-        emailService.sendSignInEmail(user.email, user.locale, token)
+        emailService.sendSignInEmail(user.email, user.locale, loginToken.id!!)
 
         return SignInRequestResponse(
             loginTokenId = loginToken.id!!,
@@ -103,7 +101,7 @@ class AuthService(
      * 프론트엔드에서 2초마다 호출
      */
     fun checkLoginStatus(loginTokenId: String): SignInStatus {
-        val loginToken = loginTokenRepository.findById(loginTokenId).orElse(null)
+        val loginToken = loginTokenRepository.findByIdAndValidIsTrue(loginTokenId)
             ?: throw BusinessException.InvalidToken("LoginToken not found")
 
         // 만료 확인
@@ -112,6 +110,8 @@ class AuthService(
         }
 
         return if (loginToken.verified) {
+            loginToken.valid = false
+            loginTokenRepository.save(loginToken)
             val user = userService.getUserById(loginToken.userId)
             SignInStatus(
                 status = SignInStatusType.SUCCESS,
@@ -157,13 +157,12 @@ class AuthService(
         }
 
         // 이미 사용됨
-        if (loginToken.used) {
-            throw BusinessException.InvalidToken("Token already used")
+        if (!loginToken.valid) {
+            throw BusinessException.InvalidToken("Token is invalid")
         }
 
         // 검증 완료 표시
         loginToken.verified = true
-        loginToken.used = true
         loginTokenRepository.save(loginToken)
 
         return VerifyLoginResponse(

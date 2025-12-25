@@ -333,7 +333,7 @@ class AuthServiceTest {
             expiresAt = System.currentTimeMillis() + 600000L
         ).apply {
             verified = false
-            used = false
+            valid = true
         }
 
         whenever(loginTokenRepository.findById(tokenId)).thenReturn(Optional.of(loginToken))
@@ -345,7 +345,7 @@ class AuthServiceTest {
         // Then
         assertTrue(response.success)
         assertTrue(loginToken.verified)
-        assertTrue(loginToken.used)
+        assertFalse(loginToken.valid)
 
         verify(loginTokenRepository, times(1)).findById(tokenId)
         verify(loginTokenRepository, times(1)).save(loginToken)
@@ -360,7 +360,7 @@ class AuthServiceTest {
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() + 600000L
         ).apply {
-            used = true
+            valid = false
         }
 
         whenever(loginTokenRepository.findById(tokenId)).thenReturn(Optional.of(loginToken))

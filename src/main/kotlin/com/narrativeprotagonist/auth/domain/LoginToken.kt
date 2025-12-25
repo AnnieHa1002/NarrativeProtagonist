@@ -18,6 +18,6 @@ class LoginToken(
 
     val expiresAt: Long = 0,
 
-    var used: Boolean = false,
+    var valid: Boolean = true,
 
 ) : Timestamped()

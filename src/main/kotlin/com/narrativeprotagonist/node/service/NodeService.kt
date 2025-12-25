@@ -28,14 +28,14 @@ class NodeService(
     fun createNode(
         projectId: String,
         nodeRequest: NodeRequest,
-        user: User
+        userId: String
     ): NodeResponse {
         val project = projectService.getProjectById(projectId)
         val newNode = Node(
             project = project,
             title = nodeRequest.title,
             content = nodeRequest.content,
-            authorId = user.id!!,
+            authorId = userId,
             nodeType = nodeRequest.nodeType,
             nextNodeId = nodeRequest.nextNodeId,
             conditions = nodeRequest.conditions,
@@ -51,13 +51,13 @@ class NodeService(
         projectId: String,
         nodeId: String,
         nodeRequest: NodeRequest,
-        user: User
+        userId: String
     ): NodeResponse {
         val existingNode = nodeRepository.findById(nodeId).orElseThrow {
             BusinessException.NodeNotFound(nodeId)
         }
 
-        if (existingNode.authorId != user.id) {
+        if (existingNode.authorId != userId) {
             throw BusinessException.UnauthorizedAction("You are not authorized to update this node.")
         }
         existingNode.update(

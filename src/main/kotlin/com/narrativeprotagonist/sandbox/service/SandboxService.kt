@@ -30,8 +30,8 @@ class SandboxService(
 
     }
 
-    fun getSandboxList(user: User): List<SandboxResponse> {
-        val sandboxes = sandboxRepository.findAllByUserId(user.id!!)
+    fun getSandboxList(userId: String): List<SandboxResponse> {
+        val sandboxes = sandboxRepository.findAllByUserId(userId)
         return sandboxes.map {
             SandboxResponse(
                 id = it.id!!,

@@ -38,9 +38,9 @@ class ProjectService(
     }
 
     fun createProject(sandboxId: String, requestBody: ProjectCreateRequest,
-                      user : User
+                      userId : String
     ) {
-        val userId = user.id!!
+        val userId = userId
         val sandbox = sandboxService.getSandboxById(sandboxId)
         val newProject = Project(
             title = requestBody.title,

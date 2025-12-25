@@ -28,9 +28,8 @@ class ProjectController(
 
     @PostMapping("")
     fun createProject(@PathVariable sandboxId: String, @RequestBody requestBody : ProjectCreateRequest,
-                      @AuthenticationPrincipal
-    user : User): ApiResponse<Any> {
-        val response = projectService.createProject(sandboxId, requestBody, user)
+                      @AuthenticationPrincipal userId: String): ApiResponse<Any> {
+        val response = projectService.createProject(sandboxId, requestBody, userId)
         return ApiResponse.success(response)
     }
     @GetMapping("/{projectId}")

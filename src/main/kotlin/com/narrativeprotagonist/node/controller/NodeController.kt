@@ -32,20 +32,18 @@ class NodeController(
 
     @PostMapping("")
     fun createNode(
-        @PathVariable projectId: String, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal user:
-        User?
+        @PathVariable projectId: String, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal userId: String
     ): ApiResponse<NodeResponse> {
-        val response = nodeService.createNode(projectId, nodeRequest, user!!)
+        val response = nodeService.createNode(projectId, nodeRequest, userId)
         return ApiResponse.success(response)
     }
 
     @PostMapping("/{nodeId}")
     fun updateNode(
         @PathVariable projectId: String,
-        @PathVariable nodeId: String, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal user:
-        User?
+        @PathVariable nodeId: String, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal userId: String
     ): ApiResponse<NodeResponse> {
-        val response = nodeService.updateNode(projectId, nodeId,nodeRequest, user!!)
+        val response = nodeService.updateNode(projectId, nodeId,nodeRequest, userId)
         return ApiResponse.success(response)
     }
 }

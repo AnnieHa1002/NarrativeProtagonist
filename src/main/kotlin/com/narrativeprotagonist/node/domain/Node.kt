@@ -2,6 +2,8 @@ package com.narrativeprotagonist.node.domain
 
 import com.narrativeprotagonist._global.enums.NodeType
 import com.narrativeprotagonist._global.timestamp.Timestamped
+import com.narrativeprotagonist.condition.domain.Condition
+import com.narrativeprotagonist.effect.domain.Effect
 import com.narrativeprotagonist.project.domain.Project
 import jakarta.persistence.*
 
@@ -33,11 +35,23 @@ class Node(
 
     var version: Int = 0,
 
-    @Column(columnDefinition = "jsonb")
-    var conditions: String? = null,
+    @OneToMany(
+        mappedBy = "node",
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
+    )
+    val conditions: MutableList<Condition> = mutableListOf(),
 
-    @Column(columnDefinition = "jsonb")
-    var effects: String? = null,
+
+    @OneToMany(
+        mappedBy = "node",
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
+    )
+    var effects: MutableList<Effect> = mutableListOf(),
+
 
     var xOffset: Int? = 0,
     var yOffset: Int? = 0,
@@ -49,8 +63,6 @@ class Node(
         content: String?,
         nodeType: NodeType?,
         nextNodeId: String?,
-        conditions: String?,
-        effects: String?,
         xOffset: Int?,
         yOffset: Int?,
     ): Node {
@@ -60,8 +72,6 @@ class Node(
         val content = content ?: this.content
         val nodeType = nodeType ?: this.nodeType
         val nextNodeId = nextNodeId ?: this.nextNodeId ?: ""
-        val conditions = conditions ?: this.conditions
-        val effects = effects ?: this.effects
         val xOffset = xOffset ?: this.xOffset
         val yOffset = yOffset ?: this.yOffset
         return Node(
@@ -73,8 +83,6 @@ class Node(
             nextNodeId = nextNodeId.ifBlank { null },
             originalNode = this.originalNode ?: this,
             version = this.version + 1,
-            conditions = conditions,
-            effects = effects,
             xOffset = xOffset,
             yOffset = yOffset,
         )
@@ -85,8 +93,6 @@ class Node(
         content: String?,
         nodeType: NodeType?,
         nextNodeId: String?,
-        conditions: String?,
-        effects: String?,
         xOffset: Int?,
         yOffset: Int?,
     ) {
@@ -94,8 +100,6 @@ class Node(
         this.content = content ?: this.content
         this.nodeType = nodeType ?: this.nodeType
         this.nextNodeId = nextNodeId ?: this.nextNodeId ?: ""
-        this.conditions = conditions ?: this.conditions
-        this.effects = effects ?: this.effects
         this.xOffset = xOffset ?: this.xOffset
         this.yOffset = yOffset ?: this.yOffset
     }

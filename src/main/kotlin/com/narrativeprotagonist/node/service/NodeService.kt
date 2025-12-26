@@ -38,8 +38,6 @@ class NodeService(
             authorId = userId,
             nodeType = nodeRequest.nodeType,
             nextNodeId = nodeRequest.nextNodeId,
-            conditions = nodeRequest.conditions,
-            effects = nodeRequest.effects,
             xOffset = nodeRequest.xOffset,
             yOffset = nodeRequest.yOffset,
         )
@@ -65,8 +63,6 @@ class NodeService(
             content = nodeRequest.content,
             nodeType = nodeRequest.nodeType,
             nextNodeId = nodeRequest.nextNodeId,
-            conditions = nodeRequest.conditions,
-            effects = nodeRequest.effects,
             xOffset = nodeRequest.xOffset,
             yOffset = nodeRequest.yOffset,
 

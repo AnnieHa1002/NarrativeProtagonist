@@ -12,8 +12,6 @@ data class NodeResponse(
     val nextNodeId: String?,
     val originalNodeId: String?,
     val version: Int,
-    val conditions: String?,
-    val effects: String?,
     val createdAt: Long?,
     val modifiedAt: Long?,
     ) {
@@ -26,8 +24,6 @@ data class NodeResponse(
         nextNodeId = node.nextNodeId,
         originalNodeId = node.originalNode?.id ,
         version = node.version,
-        conditions = node.conditions,
-        effects = node.effects,
         createdAt = node.createdAtEpochMilli(),
         modifiedAt = node.modifiedAtEpochMilli(),
 
@@ -39,8 +35,6 @@ data class NodeRequest(
     val content: String,
     val nodeType: NodeType,
     val nextNodeId: String?,
-    val conditions: String?,
-    val effects: String?,
     val xOffset: Int?,
     val yOffset: Int?,
 )

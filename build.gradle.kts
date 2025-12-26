@@ -41,6 +41,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-70:3.10.3")
+
     // dotenv for environment variables
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 

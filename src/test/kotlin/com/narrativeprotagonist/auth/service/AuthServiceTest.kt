@@ -247,9 +247,10 @@ class AuthServiceTest {
             expiresAt = System.currentTimeMillis() + 600000L
         ).apply {
             verified = false
+            valid = true
         }
 
-        whenever(loginTokenRepository.findById(loginTokenId)).thenReturn(Optional.of(loginToken))
+        whenever(loginTokenRepository.findByIdAndValidIsTrue(loginTokenId)).thenReturn(loginToken)
 
         // When
         val status = authService.checkLoginStatus(loginTokenId)
@@ -258,7 +259,7 @@ class AuthServiceTest {
         assertEquals(SignInStatusType.PENDING, status.status)
         assertNull(status.tokens)
 
-        verify(loginTokenRepository, times(1)).findById(loginTokenId)
+        verify(loginTokenRepository, times(1)).findByIdAndValidIsTrue(loginTokenId)
     }
 
     @Test
@@ -271,11 +272,13 @@ class AuthServiceTest {
             expiresAt = System.currentTimeMillis() + 600000L
         ).apply {
             verified = true
+            valid = true
         }
         val accessToken = "access-token"
         val refreshToken = "refresh-token"
 
-        whenever(loginTokenRepository.findById(loginTokenId)).thenReturn(Optional.of(loginToken))
+        whenever(loginTokenRepository.findByIdAndValidIsTrue(loginTokenId)).thenReturn(loginToken)
+        whenever(loginTokenRepository.save(any<LoginToken>())).thenReturn(loginToken)
         whenever(userService.getUserById(testUser.id!!)).thenReturn(testUser)
         whenever(jwtUtils.generateJwtToken(eq(testUser), any(), eq(JwtTokenType.ACCESS)))
             .thenReturn(accessToken)
@@ -296,7 +299,8 @@ class AuthServiceTest {
         assertEquals(accessToken, status.tokens!!.accessToken)
         assertEquals(refreshToken, status.tokens!!.refreshToken)
 
-        verify(loginTokenRepository, times(1)).findById(loginTokenId)
+        verify(loginTokenRepository, times(1)).findByIdAndValidIsTrue(loginTokenId)
+        verify(loginTokenRepository, times(1)).save(any<LoginToken>())
         verify(userService, times(1)).getUserById(testUser.id!!)
         verify(refreshTokenRepository, times(1)).save(any<RefreshToken>())
     }
@@ -309,16 +313,18 @@ class AuthServiceTest {
         val loginToken = LoginToken(
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() - 1000L // 이미 만료됨
-        )
+        ).apply {
+            valid = true
+        }
 
-        whenever(loginTokenRepository.findById(loginTokenId)).thenReturn(Optional.of(loginToken))
+        whenever(loginTokenRepository.findByIdAndValidIsTrue(loginTokenId)).thenReturn(loginToken)
 
         // When & Then
         assertThrows(BusinessException.TokenExpired::class.java) {
             authService.checkLoginStatus(loginTokenId)
         }
 
-        verify(loginTokenRepository, times(1)).findById(loginTokenId)
+        verify(loginTokenRepository, times(1)).findByIdAndValidIsTrue(loginTokenId)
     }
 
     // ============ 로그인 토큰 검증 테스트 ============
@@ -345,7 +351,6 @@ class AuthServiceTest {
         // Then
         assertTrue(response.success)
         assertTrue(loginToken.verified)
-        assertFalse(loginToken.valid)
 
         verify(loginTokenRepository, times(1)).findById(tokenId)
         verify(loginTokenRepository, times(1)).save(loginToken)

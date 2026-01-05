@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface EventLogRepository : JpaRepository<EventLog, String> {
+interface EventLogRepository : JpaRepository<EventLog, Long> {
     // TODO: 추가 쿼리 메서드 작성
 }

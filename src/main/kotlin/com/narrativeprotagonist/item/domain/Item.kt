@@ -15,19 +15,15 @@ import java.sql.Time
 class Item  (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     var project: Project? = null,
     var name : String = "",
     var description : String = "",
+    var count : Int? ,
 
-    @Column(columnDefinition = "jsonb")
-    var conditions : String? = null,
-
-    @Column(columnDefinition = "jsonb")
-    var effect : String? = null,
 
 
 ) : Timestamped()

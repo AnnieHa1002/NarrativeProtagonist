@@ -15,8 +15,8 @@ import jakarta.persistence.ManyToOne
 class VariableLog (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,5 +26,5 @@ class VariableLog (
     var oldValue : String = "",
     @Column(columnDefinition = "jsonb")
     var newValue : String = "",
-    var nodeId : String = "",
+    var nodeId : Long = 0,
 ) : Timestamped()

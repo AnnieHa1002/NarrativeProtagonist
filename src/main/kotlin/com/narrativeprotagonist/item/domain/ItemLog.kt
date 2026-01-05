@@ -11,9 +11,9 @@ import jakarta.persistence.Id
 class ItemLog(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
-    var itemId: String = "",
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
+    var itemId: Long = 0,
     var action: ActionType = ActionType.NONE,
-    var nodeId: String = "",
+    var nodeId: Long = 0,
 ) : Timestamped()

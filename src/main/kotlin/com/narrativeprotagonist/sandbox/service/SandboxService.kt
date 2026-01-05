@@ -13,35 +13,35 @@ import org.springframework.transaction.annotation.Transactional
 class SandboxService(
     private val sandboxRepository: SandboxRepository
 ) {
-    fun getSandboxById(sandboxId: String): Sandbox {
+    fun getSandboxById(sandboxId: Long): Sandbox {
         return sandboxRepository.findById(sandboxId).orElseThrow {
             BusinessException.SandboxNotFound(sandboxId)
         }
     }
 
-    fun getUserSandbox(userId: String): SandboxResponse {
+    fun getUserSandbox(userId: Long): SandboxResponse {
         val sandbox = sandboxRepository.findByUserId(userId)
             ?: throw BusinessException.UserSandboxNotFound(userId)
         return SandboxResponse(
-            id = sandbox.id!!,
-            userId = sandbox.userId!!,
+            id = sandbox.id,
+            userId = sandbox.userId,
             title = sandbox.title
         )
 
     }
 
-    fun getSandboxList(userId: String): List<SandboxResponse> {
+    fun getSandboxList(userId: Long): List<SandboxResponse> {
         val sandboxes = sandboxRepository.findAllByUserId(userId)
         return sandboxes.map {
             SandboxResponse(
-                id = it.id!!,
-                userId = it.userId!!,
+                id = it.id,
+                userId = it.userId,
                 title = it.title
             )
         }
     }
 
-    fun getSandboxByUserId(userId: String): Sandbox? {
+    fun getSandboxByUserId(userId: Long): Sandbox? {
         return sandboxRepository.findByUserId(userId)
     }
 

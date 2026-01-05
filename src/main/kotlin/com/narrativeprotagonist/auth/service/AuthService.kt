@@ -30,7 +30,7 @@ class AuthService(
         val user = userService.createUser(signUpRequest)
         val expiredAt = emailService.sendVerificationEmail(user.email)
         val response = SignUpResponse(
-            id = user.id!!,
+            id = user.id,
             email = user.email,
             expiredAt = expiredAt
         )
@@ -41,7 +41,7 @@ class AuthService(
         val currentTime = System.currentTimeMillis()
         if (currentTime <= expiredAt) {
             val user = userService.getUserByEmail(email)
-                ?: throw BusinessException.UserNotFound(email)
+                ?: throw BusinessException.UserNotFound(null, email)
             user.verified = true
             sandboxService.createSandboxForUser(user)
             return true
@@ -56,15 +56,15 @@ class AuthService(
     fun requestLogin(request: SignInRequest): SignInRequestResponse {
         val email = request.email
         val user = userService.getUserByEmail(email)
-            ?: throw BusinessException.UserNotFound(email)
+            ?: throw BusinessException.UserNotFound(null, email)
         if (!user.verified) {
             throw BusinessException.UserNotVerified(email)
         }
-        checkIfMailSentIn1min(user.id!!)
-        loginTokenRepository.invalidateAllByUserId(user.id!!)
+        checkIfMailSentIn1min(user.id)
+        loginTokenRepository.invalidateAllByUserId(user.id)
         // LoginToken 생성 (10분 만료)
         val loginToken = LoginToken(
-            userId = user.id!!,
+            userId = user.id,
             expiresAt = System.currentTimeMillis() + 10 * 60 * 1000  // 10분
         )
         loginTokenRepository.save(loginToken)
@@ -73,14 +73,14 @@ class AuthService(
         emailService.sendSignInEmail(user.email, user.locale, loginToken.id!!)
 
         return SignInRequestResponse(
-            loginTokenId = loginToken.id!!,
+            loginTokenId = loginToken.id,
         )
     }
 
     /**
      * 이메일 재전송 제한 확인 (1분 이내 재전송 불가)
      */
-    fun checkIfMailSentIn1min(userId: String) {
+    fun checkIfMailSentIn1min(userId: Long) {
         val now = System.currentTimeMillis()
         val cooldownMillis = 60 * 1000 // 1분
 
@@ -100,7 +100,7 @@ class AuthService(
      * Step 2: 로그인 상태 확인 (Polling)
      * 프론트엔드에서 2초마다 호출
      */
-    fun checkLoginStatus(loginTokenId: String): SignInStatus {
+    fun checkLoginStatus(loginTokenId: Long): SignInStatus {
         val loginToken = loginTokenRepository.findByIdAndValidIsTrue(loginTokenId)
             ?: throw BusinessException.InvalidToken("LoginToken not found")
 
@@ -134,8 +134,8 @@ class AuthService(
         refreshTokenRepository.save(
             RefreshToken(
                 sessionId = sessionId,
-                userId = user.id!!,
-                tokenHash = jwtUtils.hashToken(refreshToken),  
+                userId = user.id,
+                tokenHash = jwtUtils.hashToken(refreshToken),
                 expiresAt = jwtUtils.getExpirationFromToken(refreshToken, JwtTokenType.REFRESH),
             )
         )
@@ -149,7 +149,7 @@ class AuthService(
      * Step 3: 이메일 링크 클릭 시 호출
      * LoginToken을 검증 완료 상태로 변경
      */
-    fun verifyLoginToken(id: String): VerifyLoginResponse {
+    fun verifyLoginToken(id: Long): VerifyLoginResponse {
         val loginToken = loginTokenRepository.findById(id).orElse(null)
             ?: throw BusinessException.InvalidToken("LoginToken not found")
         if (System.currentTimeMillis() > loginToken.expiresAt) {

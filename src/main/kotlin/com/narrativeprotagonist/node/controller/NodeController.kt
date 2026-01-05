@@ -24,7 +24,7 @@ class NodeController(
 
     @GetMapping("")
     fun getNodes(
-        @PathVariable projectId: String
+        @PathVariable projectId: Long
     ): ApiResponse<List<NodeResponse>> {
         val response = nodeService.getNodes(projectId)
         return ApiResponse.success(response)
@@ -32,7 +32,7 @@ class NodeController(
 
     @PostMapping("")
     fun createNode(
-        @PathVariable projectId: String, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal userId: String
+        @PathVariable projectId: Long, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal userId: Long
     ): ApiResponse<NodeResponse> {
         val response = nodeService.createNode(projectId, nodeRequest, userId)
         return ApiResponse.success(response)
@@ -40,8 +40,8 @@ class NodeController(
 
     @PostMapping("/{nodeId}")
     fun updateNode(
-        @PathVariable projectId: String,
-        @PathVariable nodeId: String, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal userId: String
+        @PathVariable projectId: Long,
+        @PathVariable nodeId: Long, @RequestBody nodeRequest: NodeRequest, @AuthenticationPrincipal userId: Long
     ): ApiResponse<NodeResponse> {
         val response = nodeService.updateNode(projectId, nodeId,nodeRequest, userId)
         return ApiResponse.success(response)

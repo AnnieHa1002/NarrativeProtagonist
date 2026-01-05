@@ -14,13 +14,19 @@ sealed class BusinessException(
 ) : RuntimeException(message) {
 
     // ============ User 도메인 ============
-    data class UserNotFound(val userId: String) : BusinessException(
+    data class UserNotFound(
+        val userId: Long? = null,
+        val email: String? = null
+    ) : BusinessException(
         code = "USER_001",
         status = HttpStatus.NOT_FOUND,
-        message = "User not found: $userId",
+        message = when {
+            userId != null -> "User not found: $userId"
+            email != null -> "User not found: $email"
+            else -> "User not found"
+        },
         messageKey = "error.user.notFound"
     )
-
     data class DuplicateEmail(val email: String) : BusinessException(
         code = "USER_002",
         status = HttpStatus.CONFLICT,
@@ -89,14 +95,14 @@ sealed class BusinessException(
     )
 
     // ============ Project 도메인 ============
-    data class ProjectNotFound(val projectId: String) : BusinessException(
+    data class ProjectNotFound(val projectId: Long) : BusinessException(
         code = "PROJECT_001",
         status = HttpStatus.NOT_FOUND,
         message = "Project not found: $projectId",
         messageKey = "error.project.notFound"
     )
 
-    data class UnauthorizedAccess(val resourceType: String, val resourceId: String) : BusinessException(
+    data class UnauthorizedAccess(val resourceType: String, val resourceId: Long) : BusinessException(
         code = "PROJECT_002",
         status = HttpStatus.FORBIDDEN,
         message = "Unauthorized access to $resourceType: $resourceId",
@@ -104,14 +110,14 @@ sealed class BusinessException(
     )
 
     // ============ Sandbox 도메인 ============
-    data class SandboxNotFound(val sandboxId: String) : BusinessException(
+    data class SandboxNotFound(val sandboxId: Long) : BusinessException(
         code = "SANDBOX_001",
         status = HttpStatus.NOT_FOUND,
         message = "Sandbox not found: $sandboxId",
         messageKey = "error.sandbox.notFound"
     )
 
-    data class UserSandboxNotFound(val userId: String) : BusinessException(
+    data class UserSandboxNotFound(val userId: Long) : BusinessException(
         code = "SANDBOX_002",
         status = HttpStatus.NOT_FOUND,
         message = "Sandbox not found for user: $userId",
@@ -119,7 +125,7 @@ sealed class BusinessException(
     )
 
     //=========== Node  ============
-    data class NodeNotFound(val nodeId: String) : BusinessException(
+    data class NodeNotFound(val nodeId: Long) : BusinessException(
         code = "NODE_001",
         status = HttpStatus.NOT_FOUND,
         message = "Node not found: $nodeId",
@@ -128,14 +134,14 @@ sealed class BusinessException(
 
 
     // ============ Common ============
-    data class InvalidArgument(val field: String, val reason: String) : BusinessException(
+    data class InvalidArgument(val field: Long, val reason: String) : BusinessException(
         code = "COMMON_001",
         status = HttpStatus.BAD_REQUEST,
         message = "Invalid argument '$field': $reason",
         messageKey = "error.common.invalidArgument"
     )
 
-    data class ResourceNotFound(val resourceType: String, val resourceId: String) : BusinessException(
+    data class ResourceNotFound(val resourceType: String, val resourceId: Long) : BusinessException(
         code = "COMMON_002",
         status = HttpStatus.NOT_FOUND,
         message = "$resourceType not found: $resourceId",

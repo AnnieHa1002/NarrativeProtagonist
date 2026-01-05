@@ -14,13 +14,15 @@ import jakarta.persistence.ManyToOne
 class Variable (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     var project: Project? = null,
     var key : String = "",
+
     @Column(columnDefinition = "jsonb")
     var value : String = "",
-) : Timestamped()
+) : Timestamped(){
+}

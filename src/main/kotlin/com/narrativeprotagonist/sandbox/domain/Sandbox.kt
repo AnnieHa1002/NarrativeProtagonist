@@ -11,14 +11,14 @@ import jakarta.persistence.Id
 class Sandbox(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
-    val userId: String? = "",
+    val userId: Long = 0,
     var title: String = ""
 
 
 ) : Timestamped(){
-    protected constructor() : this(id = null, userId = "", title = "")
-    constructor(user : User) : this(id = null, userId = user.id, title = user.nickname)
+    protected constructor() : this(id = 0, userId = 0, title = "")
+    constructor(user : User) : this(id = 0, userId = user.id, title = user.nickname)
 }

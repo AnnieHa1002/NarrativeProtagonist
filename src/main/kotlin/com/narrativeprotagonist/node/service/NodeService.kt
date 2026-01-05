@@ -16,7 +16,7 @@ class NodeService(
     private val nodeRepository: NodeRepository,
     private val projectService: ProjectService
 ) {
-    fun getNodes(projectId: String): List<NodeResponse> {
+    fun getNodes(projectId: Long): List<NodeResponse> {
         val nodeList = nodeRepository.findAllByProjectId(projectId)
         return nodeList.map { node ->
             NodeResponse(
@@ -26,16 +26,16 @@ class NodeService(
     }
 
     fun createNode(
-        projectId: String,
+        projectId: Long,
         nodeRequest: NodeRequest,
-        userId: String
+        userId: Long
     ): NodeResponse {
         val project = projectService.getProjectById(projectId)
         val newNode = Node(
             project = project,
             title = nodeRequest.title,
             content = nodeRequest.content,
-            authorId = userId,
+            authorId = userId.toString(),
             nodeType = nodeRequest.nodeType,
             nextNodeId = nodeRequest.nextNodeId,
             xOffset = nodeRequest.xOffset,
@@ -46,16 +46,16 @@ class NodeService(
     }
 
     fun updateNode(
-        projectId: String,
-        nodeId: String,
+        projectId: Long,
+        nodeId: Long,
         nodeRequest: NodeRequest,
-        userId: String
+        userId: Long
     ): NodeResponse {
         val existingNode = nodeRepository.findById(nodeId).orElseThrow {
             BusinessException.NodeNotFound(nodeId)
         }
 
-        if (existingNode.authorId != userId) {
+        if (existingNode.authorId != userId.toString()) {
             throw BusinessException.UnauthorizedAction("You are not authorized to update this node.")
         }
         existingNode.update(
@@ -69,5 +69,11 @@ class NodeService(
             )
         nodeRepository.save(existingNode)
         return NodeResponse(existingNode, projectId)
+    }
+
+    fun getNodeById(nodeId: Long) : Node {
+        return nodeRepository.findById(nodeId).orElseThrow {
+            BusinessException.NodeNotFound(nodeId)
+        }
     }
 }

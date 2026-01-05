@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ProjectRepository : JpaRepository<Project, String> {
-    fun findAllBySandboxId(sandboxId: String): List<Project>
-    fun findBySandboxId(sandboxId: String, pageable: Pageable): Page<Project>
+interface ProjectRepository : JpaRepository<Project, Long> {
+    fun findAllBySandboxId(sandboxId: Long): List<Project>
+    fun findBySandboxId(sandboxId: Long, pageable: Pageable): Page<Project>
 }

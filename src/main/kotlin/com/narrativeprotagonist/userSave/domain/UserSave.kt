@@ -14,13 +14,13 @@ import jakarta.persistence.ManyToOne
 class UserSave (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User? = null,
-    val projectId : String? = null,
-    val currentNodeId: String? = null,
+    val projectId : Long? = null,
+    val currentNodeId: Long? = null,
     @Column(columnDefinition = "jsonb")
     val variables : String? = null,
     @Column(columnDefinition = "jsonb")

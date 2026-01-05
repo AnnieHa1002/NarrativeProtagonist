@@ -18,7 +18,7 @@ class ProjectController(
 ) {
 
     @GetMapping("")
-    fun getProjectList(@PathVariable sandboxId: String , @RequestParam size : Int = 10, @RequestParam page : Int
+    fun getProjectList(@PathVariable sandboxId: Long , @RequestParam size : Int = 10, @RequestParam page : Int
     = 0,
     @RequestParam sortBy : String = "createdAt", @RequestParam sortDirection: SortDirection = SortDirection.DESCENDING):
             ApiResponse<Page<ProjectResponse>> {
@@ -27,13 +27,13 @@ class ProjectController(
     }
 
     @PostMapping("")
-    fun createProject(@PathVariable sandboxId: String, @RequestBody requestBody : ProjectCreateRequest,
-                      @AuthenticationPrincipal userId: String): ApiResponse<Any> {
+    fun createProject(@PathVariable sandboxId: Long, @RequestBody requestBody : ProjectCreateRequest,
+                      @AuthenticationPrincipal userId: Long): ApiResponse<Any> {
         val response = projectService.createProject(sandboxId, requestBody, userId)
         return ApiResponse.success(response)
     }
     @GetMapping("/{projectId}")
-    fun getProject(@PathVariable sandboxId: String ,@PathVariable projectId : String): ApiResponse<ProjectResponse> {
+    fun getProject(@PathVariable sandboxId: Long ,@PathVariable projectId : Long): ApiResponse<ProjectResponse> {
         val response = projectService.getProject(projectId, sandboxId)
         return ApiResponse.success(response)
     }

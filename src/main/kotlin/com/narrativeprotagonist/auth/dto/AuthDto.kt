@@ -9,7 +9,7 @@ data class SignUpRequest(
 )
 
 data class SignUpResponse(
-    val id: String?,
+    val id: Long,
     val email: String,
     val expiredAt: Long?,
 )
@@ -20,7 +20,7 @@ data class SignInRequest(
 
 // ============ 로그인 요청 ============
 data class SignInRequestResponse(
-    val loginTokenId: String,
+    val loginTokenId: Long,
 )
 
 // ============ 로그인 상태 확인 ============

@@ -22,7 +22,7 @@ class ProjectService(
     private val projectReleaseRepository: ProjectReleaseRepository,
     private val sandboxService: SandboxService
 ) {
-    fun getProjectList(sandboxId: String, size: Int, page: Int, sortBy: String, sortDirection: SortDirection):
+    fun getProjectList(sandboxId: Long, size: Int, page: Int, sortBy: String, sortDirection: SortDirection):
             Page<ProjectResponse> {
         //pagination and sorting logic can be added here
         val sort = when {
@@ -37,8 +37,8 @@ class ProjectService(
         }
     }
 
-    fun createProject(sandboxId: String, requestBody: ProjectCreateRequest,
-                      userId : String
+    fun createProject(sandboxId: Long, requestBody: ProjectCreateRequest,
+                      userId : Long
     ) {
         val userId = userId
         val sandbox = sandboxService.getSandboxById(sandboxId)
@@ -51,7 +51,7 @@ class ProjectService(
         projectRepository.save(newProject)
     }
 
-    fun getProject(projectId: String, sandboxId: String): ProjectResponse {
+    fun getProject(projectId: Long, sandboxId: Long): ProjectResponse {
         val project = projectRepository.findById(projectId).orElseThrow {
             BusinessException.ProjectNotFound(projectId)
         }
@@ -61,7 +61,7 @@ class ProjectService(
         return ProjectResponse(project, sandboxId)
     }
 
-    fun getProjectById(projectId: String): Project {
+    fun getProjectById(projectId: Long): Project {
         return projectRepository.findById(projectId).orElseThrow {
             BusinessException.ProjectNotFound(projectId)
         }

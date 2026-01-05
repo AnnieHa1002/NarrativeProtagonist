@@ -17,13 +17,13 @@ class SandboxController(
     private val sandboxService: SandboxService
 ) {
     @GetMapping("")
-    fun getUserSandbox(@AuthenticationPrincipal userId: String ): ApiResponse<SandboxResponse> {
+    fun getUserSandbox(@AuthenticationPrincipal userId: Long ): ApiResponse<SandboxResponse> {
         val response = sandboxService.getUserSandbox(userId)
         return ApiResponse.success(response)
     }
 
     @GetMapping("/lists")
-    fun getSandboxList(@AuthenticationPrincipal userId: String ): ApiResponse<List<SandboxResponse>> {
+    fun getSandboxList(@AuthenticationPrincipal userId: Long ): ApiResponse<List<SandboxResponse>> {
         val response = sandboxService.getSandboxList(userId)
         return ApiResponse.success(response)
     }

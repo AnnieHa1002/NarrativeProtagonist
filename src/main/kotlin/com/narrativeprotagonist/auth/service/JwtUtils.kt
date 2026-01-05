@@ -38,7 +38,7 @@ class JwtUtils(
             JwtTokenType.ACCESS -> accessSecretKey
             JwtTokenType.REFRESH -> refreshSecretKey
         }
-        val userId = user.id!!
+        val userId = user.id.toString()
         val expiryDate = Date(now.time + expirationTime)
         val token = Jwts.builder()
             .subject(userId)  // sub: userId
@@ -80,7 +80,7 @@ class JwtUtils(
     /**
      * JWT 토큰에서 userId 추출
      */
-    fun getUserIdFromToken(token: String, tokenType: JwtTokenType = JwtTokenType.ACCESS): String {
+    fun getUserIdFromToken(token: String, tokenType: JwtTokenType = JwtTokenType.ACCESS): Long {
         val secretKey = when (tokenType) {
             JwtTokenType.ACCESS -> accessSecretKey
             JwtTokenType.REFRESH -> refreshSecretKey
@@ -91,7 +91,7 @@ class JwtUtils(
             .parseSignedClaims(token)
             .payload
 
-        return claims.subject
+        return claims.subject.toLong()
     }
 
     /**

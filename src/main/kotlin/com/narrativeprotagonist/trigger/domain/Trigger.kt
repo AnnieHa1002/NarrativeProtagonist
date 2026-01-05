@@ -10,8 +10,8 @@ import jakarta.persistence.Id
 class Trigger (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
     val name: String = "",
     val description: String = "",
 

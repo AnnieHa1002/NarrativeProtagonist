@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface NodeRepository : JpaRepository<Node, String> {
+interface NodeRepository : JpaRepository<Node, Long> {
 
-    fun findAllByProjectId(projectId: String): List<Node>
+    fun findAllByProjectId(projectId: Long): List<Node>
     // TODO: 추가 쿼리 메서드 작성
 }

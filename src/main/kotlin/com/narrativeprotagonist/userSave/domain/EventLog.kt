@@ -12,10 +12,10 @@ import jakarta.persistence.ManyToOne
 class EventLog (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
     @ManyToOne(fetch = FetchType.LAZY)
     val userSave : UserSave? = null,
-    val nodeId : String = "",
+    val nodeId : Long = 0,
     val occurred : Boolean = false,
 ) : Timestamped()

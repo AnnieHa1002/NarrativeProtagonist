@@ -46,7 +46,7 @@ class AuthController(
      */
     @GetMapping("/login-status/{loginTokenId}")
     fun checkLoginStatus(
-        @PathVariable loginTokenId: String,
+        @PathVariable loginTokenId: Long,
         response: HttpServletResponse
     ): ApiResponse<SignInStatusResponse> {
         val status = authService.checkLoginStatus(loginTokenId)
@@ -85,7 +85,7 @@ class AuthController(
      * Step 3: 이메일 링크 클릭 시 호출
      */
     @GetMapping("/verify-login")
-    fun verifyLoginToken(@RequestParam token: String): ApiResponse<Unit> {
+    fun verifyLoginToken(@RequestParam token: Long): ApiResponse<Unit> {
         authService.verifyLoginToken(token)
         return ApiResponse.success("verified")
     }

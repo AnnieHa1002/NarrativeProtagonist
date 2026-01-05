@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SandboxRepository : JpaRepository<Sandbox, String> {
+interface SandboxRepository : JpaRepository<Sandbox, Long> {
 
-    fun findByUserId(userId: String): Sandbox?
-    fun findAllByUserId(userId: String): List<Sandbox>
+    fun findByUserId(userId: Long): Sandbox?
+    fun findAllByUserId(userId: Long): List<Sandbox>
 }

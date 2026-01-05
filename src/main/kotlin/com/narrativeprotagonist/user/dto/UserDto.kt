@@ -4,7 +4,7 @@ import com.narrativeprotagonist.user.domain.User
 
 // DTO classes
 data class UserResponse(
-    val id: String?,
+    val id: Long,
     val email: String,
     val nickname: String?,
     val verified: Boolean,

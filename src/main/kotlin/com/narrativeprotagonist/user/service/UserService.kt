@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository
 ) {
-    fun getUserById(id: String): User =
+    fun getUserById(id: Long): User =
         userRepository.findByIdOrNull(id)
             ?: throw BusinessException.UserNotFound(id)
 
@@ -26,7 +26,7 @@ class UserService(
             throw BusinessException.DuplicateEmail(email)
         }
 
-        return userRepository.save(User(null, email, nickname = request.nickname))
+        return userRepository.save(User(id = 0, email = email, nickname = request.nickname))
     }
 
     fun getAllUsers(): List<User> =

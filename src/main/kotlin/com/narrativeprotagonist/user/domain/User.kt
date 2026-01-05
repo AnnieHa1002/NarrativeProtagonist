@@ -11,8 +11,8 @@ import java.util.Locale
 class User(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
     @field:Email
     @field:NotBlank
@@ -27,5 +27,5 @@ class User(
 
     ) : Timestamped() {
 
-    protected constructor() : this(id = null, email = "", nickname = "")
+    protected constructor() : this(id = 0, email = "", nickname = "")
 }

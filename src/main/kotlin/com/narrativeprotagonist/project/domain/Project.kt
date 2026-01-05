@@ -8,12 +8,12 @@ import jakarta.persistence.*
 class Project(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     val sandbox: Sandbox? = null,
-    val userId: String = "",
+    val userId: Long = 0,
     val title: String = "",
     val description: String = "",
 ) : Timestamped()

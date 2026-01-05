@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserSaveRepository : JpaRepository<UserSave, String> {
+interface UserSaveRepository : JpaRepository<UserSave, Long> {
     // TODO: 추가 쿼리 메서드 작성
 }

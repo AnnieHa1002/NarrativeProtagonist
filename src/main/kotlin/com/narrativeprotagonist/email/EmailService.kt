@@ -39,7 +39,7 @@ class EmailService(
     /**
      * 로그인 매직 링크 메일 발송
      */
-    fun sendSignInEmail(to: String, locale: Locale = Locale.KOREAN, loginToken: String) {
+    fun sendSignInEmail(to: String, locale: Locale = Locale.KOREAN, loginToken: Long) {
         val loginUrl = "${emailProperties.baseUrl}/api/auth/verify-login?token=$loginToken"
 
         val context = Context(locale).apply {

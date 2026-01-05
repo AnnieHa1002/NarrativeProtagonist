@@ -2,6 +2,7 @@ package com.narrativeprotagonist.node.domain
 
 import com.narrativeprotagonist._global.enums.NodeType
 import com.narrativeprotagonist._global.timestamp.Timestamped
+import com.narrativeprotagonist.choice.domain.Choice
 import com.narrativeprotagonist.condition.domain.Condition
 import com.narrativeprotagonist.effect.domain.Effect
 import com.narrativeprotagonist.project.domain.Project
@@ -11,8 +12,8 @@ import jakarta.persistence.*
 class Node(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
@@ -27,7 +28,7 @@ class Node(
     @Enumerated(EnumType.STRING)
     var nodeType: NodeType = NodeType.SCENE,
 
-    var nextNodeId: String? = null,
+    var nextNodeId: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "original_node_id")
@@ -35,6 +36,13 @@ class Node(
 
     var version: Int = 0,
 
+    @OneToMany(
+        mappedBy = "node",
+        fetch = FetchType.LAZY,
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
+    )
+    val choices: MutableList<Choice> = mutableListOf(),
     @OneToMany(
         mappedBy = "node",
         fetch = FetchType.LAZY,
@@ -62,16 +70,15 @@ class Node(
         title: String?,
         content: String?,
         nodeType: NodeType?,
-        nextNodeId: String?,
+        nextNodeId: Long?,
         xOffset: Int?,
         yOffset: Int?,
     ): Node {
         // if not null, use the new value; otherwise, use the existing value
-        // if nextNodeId is blank, set to null
         val title = title ?: this.title
         val content = content ?: this.content
         val nodeType = nodeType ?: this.nodeType
-        val nextNodeId = nextNodeId ?: this.nextNodeId ?: ""
+        val nextNodeId = nextNodeId ?: this.nextNodeId
         val xOffset = xOffset ?: this.xOffset
         val yOffset = yOffset ?: this.yOffset
         return Node(
@@ -80,7 +87,7 @@ class Node(
             title = title,
             content = content,
             nodeType = nodeType,
-            nextNodeId = nextNodeId.ifBlank { null },
+            nextNodeId = nextNodeId,
             originalNode = this.originalNode ?: this,
             version = this.version + 1,
             xOffset = xOffset,
@@ -92,14 +99,14 @@ class Node(
         title: String?,
         content: String?,
         nodeType: NodeType?,
-        nextNodeId: String?,
+        nextNodeId: Long?,
         xOffset: Int?,
         yOffset: Int?,
     ) {
         this.title = title ?: this.title
         this.content = content ?: this.content
         this.nodeType = nodeType ?: this.nodeType
-        this.nextNodeId = nextNodeId ?: this.nextNodeId ?: ""
+        this.nextNodeId = nextNodeId ?: this.nextNodeId
         this.xOffset = xOffset ?: this.xOffset
         this.yOffset = yOffset ?: this.yOffset
     }

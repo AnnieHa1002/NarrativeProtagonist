@@ -10,9 +10,9 @@ import java.util.*
 @Entity
 class RefreshToken(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: String? = null,
-    val userId: String = "",
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
+    val userId: Long = 0,
     val sessionId: String = "",
     val tokenHash: String = "",
     val expiresAt: Date = Date(),
@@ -24,7 +24,7 @@ class RefreshToken(
 
 
 ) : Timestamped() {
-    constructor(session_id: String, userId: String, tokenHash: String, expiresAt: Date) : this(
+    constructor(session_id: String, userId: Long, tokenHash: String, expiresAt: Date) : this(
         userId = userId,
         tokenHash = tokenHash,
         sessionId = session_id,

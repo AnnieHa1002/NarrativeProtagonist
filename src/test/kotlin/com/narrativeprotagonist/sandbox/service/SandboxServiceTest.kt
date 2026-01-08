@@ -38,15 +38,16 @@ class SandboxServiceTest {
             email = "test@example.com",
             nickname = "TestUser"
         ).apply {
-            id = "test-user-id"
+            id = 1L
             verified = true
         }
 
         testSandbox = Sandbox(
-            id = "sandbox-1",
             userId = testUser.id,
             title = "Test Sandbox"
-        )
+        ).apply {
+            id = 1L
+        }
     }
 
     // ============ ID로 샌드박스 조회 테스트 ============
@@ -55,7 +56,7 @@ class SandboxServiceTest {
     @DisplayName("ID로 샌드박스 조회 성공")
     fun `should get sandbox by ID successfully`() {
         // Given
-        val sandboxId = "sandbox-1"
+        val sandboxId = 1L
 
         whenever(sandboxRepository.findById(sandboxId))
             .thenReturn(Optional.of(testSandbox))
@@ -65,7 +66,7 @@ class SandboxServiceTest {
 
         // Then
         assertNotNull(result)
-        assertEquals("sandbox-1", result.id)
+        assertEquals(1L, result.id)
         assertEquals(testUser.id, result.userId)
 
         verify(sandboxRepository, times(1)).findById(sandboxId)
@@ -75,7 +76,7 @@ class SandboxServiceTest {
     @DisplayName("ID로 샌드박스 조회 실패 - 존재하지 않는 샌드박스")
     fun `should fail to get sandbox by ID when not found`() {
         // Given
-        val sandboxId = "non-existent-sandbox"
+        val sandboxId = 999L
 
         whenever(sandboxRepository.findById(sandboxId))
             .thenReturn(Optional.empty())
@@ -104,7 +105,7 @@ class SandboxServiceTest {
 
         // Then
         assertNotNull(result)
-        assertEquals("sandbox-1", result.id)
+        assertEquals(1L, result.id)
         assertEquals(userId, result.userId)
         assertEquals("Test Sandbox", result.title)
 
@@ -115,7 +116,7 @@ class SandboxServiceTest {
     @DisplayName("사용자 샌드박스 조회 실패 - 샌드박스 없음")
     fun `should fail to get user sandbox when not found`() {
         // Given
-        val userId = "user-without-sandbox"
+        val userId = 999L
 
         whenever(sandboxRepository.findByUserId(userId))
             .thenReturn(null)
@@ -137,10 +138,11 @@ class SandboxServiceTest {
         val sandboxes = listOf(
             testSandbox,
             Sandbox(
-                id = "sandbox-2",
                 userId = testUser.id,
                 title = "Second Sandbox"
-            )
+            ).apply {
+                id = 2L
+            }
         )
 
         whenever(sandboxRepository.findAllByUserId(testUser.id!!))
@@ -152,8 +154,8 @@ class SandboxServiceTest {
         // Then
         assertNotNull(result)
         assertEquals(2, result.size)
-        assertEquals("sandbox-1", result[0].id)
-        assertEquals("sandbox-2", result[1].id)
+        assertEquals(1L, result[0].id)
+        assertEquals(2L, result[1].id)
         assertEquals("Test Sandbox", result[0].title)
         assertEquals("Second Sandbox", result[1].title)
 
@@ -193,7 +195,7 @@ class SandboxServiceTest {
 
         // Then
         assertNotNull(result)
-        assertEquals("sandbox-1", result?.id)
+        assertEquals(1L, result?.id)
         assertEquals(userId, result?.userId)
 
         verify(sandboxRepository, times(1)).findByUserId(userId)
@@ -203,7 +205,7 @@ class SandboxServiceTest {
     @DisplayName("사용자 ID로 샌드박스 조회 - null 반환")
     fun `should return null when user has no sandbox`() {
         // Given
-        val userId = "user-without-sandbox"
+        val userId = 999L
 
         whenever(sandboxRepository.findByUserId(userId))
             .thenReturn(null)

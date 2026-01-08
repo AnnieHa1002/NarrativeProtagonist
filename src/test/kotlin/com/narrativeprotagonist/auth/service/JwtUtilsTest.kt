@@ -36,7 +36,7 @@ class JwtUtilsTest {
             email = "test@example.com",
             nickname = "TestUser"
         ).apply {
-            id = "test-user-id-123"
+            id = 1L
         }
     }
 
@@ -139,7 +139,7 @@ class JwtUtilsTest {
         val userId = jwtUtils.getUserIdFromToken(token, JwtTokenType.ACCESS)
 
         // Then
-        assertEquals("test-user-id-123", userId)
+        assertEquals(1L, userId)
     }
 
     @Test
@@ -152,7 +152,7 @@ class JwtUtilsTest {
         val userId = jwtUtils.getUserIdFromToken(token, JwtTokenType.REFRESH)
 
         // Then
-        assertEquals("test-user-id-123", userId)
+        assertEquals(1L, userId)
     }
 
     @Test

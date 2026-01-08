@@ -62,7 +62,7 @@ class AuthServiceTest {
             email = "test@example.com",
             nickname = "TestUser"
         ).apply {
-            id = "test-user-id"
+            id = 1L
             verified = true
         }
     }
@@ -87,7 +87,7 @@ class AuthServiceTest {
 
         // Then
         assertNotNull(response)
-        assertEquals("test-user-id", response.id)
+        assertEquals(1L, response.id)
         assertEquals("test@example.com", response.email)
         assertEquals(expiredAt, response.expiredAt)
 
@@ -164,14 +164,14 @@ class AuthServiceTest {
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() + 600000L
         ).apply {
-            id = "login-token-id"
+            id = 2L
         }
 
         whenever(userService.getUserByEmail(request.email)).thenReturn(testUser)
         whenever(loginTokenRepository.findLatestByUserId(testUser.id!!)).thenReturn(null)
         whenever(loginTokenRepository.save(any<LoginToken>())).thenAnswer { invocation ->
             val token = invocation.arguments[0] as LoginToken
-            token.id = "login-token-id"
+            token.id = 2L
             token
         }
         doNothing().whenever(loginTokenRepository).invalidateAllByUserId(testUser.id!!)
@@ -182,7 +182,7 @@ class AuthServiceTest {
 
         // Then
         assertNotNull(response)
-        assertEquals("login-token-id", response.loginTokenId)
+        assertEquals(2L, response.loginTokenId)
 
         verify(userService, times(1)).getUserByEmail(request.email)
         verify(loginTokenRepository, times(1)).invalidateAllByUserId(testUser.id!!)
@@ -241,7 +241,7 @@ class AuthServiceTest {
     @DisplayName("로그인 상태 확인 - PENDING (아직 이메일 미클릭)")
     fun `should return pending status when login not verified yet`() {
         // Given
-        val loginTokenId = "login-token-id"
+        val loginTokenId = 2L
         val loginToken = LoginToken(
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() + 600000L
@@ -266,7 +266,7 @@ class AuthServiceTest {
     @DisplayName("로그인 상태 확인 - SUCCESS (이메일 클릭 완료)")
     fun `should return success status with tokens when login verified`() {
         // Given
-        val loginTokenId = "login-token-id"
+        val loginTokenId = 2L
         val loginToken = LoginToken(
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() + 600000L
@@ -309,7 +309,7 @@ class AuthServiceTest {
     @DisplayName("로그인 상태 확인 실패 - 만료된 토큰")
     fun `should fail to check login status with expired token`() {
         // Given
-        val loginTokenId = "login-token-id"
+        val loginTokenId = 2L
         val loginToken = LoginToken(
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() - 1000L // 이미 만료됨
@@ -333,7 +333,7 @@ class AuthServiceTest {
     @DisplayName("로그인 토큰 검증 성공")
     fun `should verify login token successfully`() {
         // Given
-        val tokenId = "login-token-id"
+        val tokenId = 2L
         val loginToken = LoginToken(
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() + 600000L
@@ -360,7 +360,7 @@ class AuthServiceTest {
     @DisplayName("로그인 토큰 검증 실패 - 이미 사용된 토큰")
     fun `should fail to verify already used login token`() {
         // Given
-        val tokenId = "login-token-id"
+        val tokenId = 2L
         val loginToken = LoginToken(
             userId = testUser.id!!,
             expiresAt = System.currentTimeMillis() + 600000L

@@ -53,23 +53,25 @@ class ProjectServiceTest {
             email = "test@example.com",
             nickname = "TestUser"
         ).apply {
-            id = "test-user-id"
+            id = 1L
             verified = true
         }
 
         testSandbox = Sandbox(
-            id = "sandbox-1",
             userId = testUser.id,
             title = "Test Sandbox"
-        )
+        ).apply {
+            id = 1L
+        }
 
         testProject = Project(
-            id = "project-1",
             sandbox = testSandbox,
             userId = testUser.id!!,
             title = "Test Project",
             description = "Test Description"
-        )
+        ).apply {
+            id = 1L
+        }
     }
 
     // ============ 프로젝트 목록 조회 테스트 ============
@@ -78,7 +80,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 목록 조회 성공 - 내림차순 정렬")
     fun `should get project list successfully with descending order`() {
         // Given
-        val sandboxId = "sandbox-1"
+        val sandboxId = 1L
         val projects = listOf(testProject)
         val pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending())
         val page = PageImpl(projects, pageable, 1)
@@ -92,7 +94,7 @@ class ProjectServiceTest {
         // Then
         assertNotNull(result)
         assertEquals(1, result.totalElements)
-        assertEquals("project-1", result.content[0].id)
+        assertEquals(1L, result.content[0].id)
         assertEquals("Test Project", result.content[0].title)
 
         verify(projectRepository, times(1)).findBySandboxId(eq(sandboxId), any())
@@ -102,7 +104,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 목록 조회 성공 - 오름차순 정렬")
     fun `should get project list successfully with ascending order`() {
         // Given
-        val sandboxId = "sandbox-1"
+        val sandboxId = 1L
         val projects = listOf(testProject)
         val pageable = PageRequest.of(0, 10, Sort.by("title").ascending())
         val page = PageImpl(projects, pageable, 1)
@@ -124,7 +126,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 목록 조회 - 빈 목록 반환")
     fun `should return empty list when no projects exist`() {
         // Given
-        val sandboxId = "sandbox-1"
+        val sandboxId = 1L
         val pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending())
         val page = PageImpl<Project>(emptyList(), pageable, 0)
 
@@ -148,7 +150,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 생성 성공")
     fun `should create project successfully`() {
         // Given
-        val sandboxId = "sandbox-1"
+        val sandboxId = 1L
         val request = ProjectCreateRequest(
             title = "New Project",
             description = "New Description"
@@ -171,7 +173,7 @@ class ProjectServiceTest {
     @DisplayName("프로젝트 생성 실패 - 존재하지 않는 샌드박스")
     fun `should fail to create project when sandbox not found`() {
         // Given
-        val sandboxId = "non-existent-sandbox"
+        val sandboxId = 999L
         val request = ProjectCreateRequest(
             title = "New Project",
             description = "New Description"
@@ -195,8 +197,8 @@ class ProjectServiceTest {
     @DisplayName("개별 프로젝트 조회 성공")
     fun `should get project successfully`() {
         // Given
-        val projectId = "project-1"
-        val sandboxId = "sandbox-1"
+        val projectId = 1L
+        val sandboxId = 1L
 
         whenever(projectRepository.findById(projectId))
             .thenReturn(Optional.of(testProject))
@@ -206,7 +208,7 @@ class ProjectServiceTest {
 
         // Then
         assertNotNull(result)
-        assertEquals("project-1", result.id)
+        assertEquals(1L, result.id)
         assertEquals("Test Project", result.title)
         assertEquals(sandboxId, result.sandboxId)
 
@@ -217,8 +219,8 @@ class ProjectServiceTest {
     @DisplayName("개별 프로젝트 조회 실패 - 존재하지 않는 프로젝트")
     fun `should fail to get project when project not found`() {
         // Given
-        val projectId = "non-existent-project"
-        val sandboxId = "sandbox-1"
+        val projectId = 999L
+        val sandboxId = 1L
 
         whenever(projectRepository.findById(projectId))
             .thenReturn(Optional.empty())
@@ -235,8 +237,8 @@ class ProjectServiceTest {
     @DisplayName("개별 프로젝트 조회 실패 - 잘못된 샌드박스 ID")
     fun `should fail to get project when sandbox ID mismatch`() {
         // Given
-        val projectId = "project-1"
-        val wrongSandboxId = "wrong-sandbox"
+        val projectId = 1L
+        val wrongSandboxId = 999L
 
         whenever(projectRepository.findById(projectId))
             .thenReturn(Optional.of(testProject))
@@ -255,7 +257,7 @@ class ProjectServiceTest {
     @DisplayName("ID로 프로젝트 조회 성공")
     fun `should get project by ID successfully`() {
         // Given
-        val projectId = "project-1"
+        val projectId = 1L
 
         whenever(projectRepository.findById(projectId))
             .thenReturn(Optional.of(testProject))
@@ -265,7 +267,7 @@ class ProjectServiceTest {
 
         // Then
         assertNotNull(result)
-        assertEquals("project-1", result.id)
+        assertEquals(1L, result.id)
         assertEquals("Test Project", result.title)
 
         verify(projectRepository, times(1)).findById(projectId)
@@ -275,7 +277,7 @@ class ProjectServiceTest {
     @DisplayName("ID로 프로젝트 조회 실패 - 존재하지 않는 프로젝트")
     fun `should fail to get project by ID when not found`() {
         // Given
-        val projectId = "non-existent-project"
+        val projectId = 999L
 
         whenever(projectRepository.findById(projectId))
             .thenReturn(Optional.empty())

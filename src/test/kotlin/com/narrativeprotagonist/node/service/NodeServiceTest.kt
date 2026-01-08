@@ -48,28 +48,29 @@ class NodeServiceTest {
             email = "test@example.com",
             nickname = "TestUser"
         ).apply {
-            id = "test-user-id"
+            id = 1L
             verified = true
         }
 
         testSandbox = Sandbox(
-            id = "sandbox-1",
             userId = testUser.id,
             title = "Test Sandbox"
-        )
+        ).apply {
+            id = 1L
+        }
 
         testProject = Project(
-            id = "project-1",
             sandbox = testSandbox,
             userId = testUser.id!!,
             title = "Test Project",
             description = "Test Description"
-        )
+        ).apply {
+            id = 1L
+        }
 
         testNode = Node(
-            id = "node-1",
             project = testProject,
-            authorId = testUser.id!!,
+            authorId = testUser.id!!.toString(),
             title = "Test Node",
             content = "Test Content",
             nodeType = NodeType.SCENE,
@@ -78,7 +79,9 @@ class NodeServiceTest {
             version = 1,
             xOffset = 0,
             yOffset = 0
-        )
+        ).apply {
+            id = 1L
+        }
     }
 
     // ============ 노드 목록 조회 테스트 ============
@@ -87,22 +90,23 @@ class NodeServiceTest {
     @DisplayName("노드 목록 조회 성공")
     fun `should get nodes successfully`() {
         // Given
-        val projectId = "project-1"
+        val projectId = 1L
         val nodes = listOf(
             testNode,
             Node(
-                id = "node-2",
                 project = testProject,
-                authorId = testUser.id!!,
+                authorId = testUser.id!!.toString(),
                 title = "Second Node",
                 content = "Second Content",
                 nodeType = NodeType.BRANCH,
-                nextNodeId = "node-3",
+                nextNodeId = 3L,
                 originalNode = null,
                 version = 1,
                 xOffset = 100,
                 yOffset = 100
-            )
+            ).apply {
+                id = 2L
+            }
         )
 
         whenever(nodeRepository.findAllByProjectId(projectId))
@@ -114,10 +118,10 @@ class NodeServiceTest {
         // Then
         assertNotNull(result)
         assertEquals(2, result.size)
-        assertEquals("node-1", result[0].id)
+        assertEquals(1L, result[0].id)
         assertEquals("Test Node", result[0].title)
         assertEquals(NodeType.SCENE, result[0].nodeType)
-        assertEquals("node-2", result[1].id)
+        assertEquals(2L, result[1].id)
         assertEquals(NodeType.BRANCH, result[1].nodeType)
 
         verify(nodeRepository, times(1)).findAllByProjectId(projectId)
@@ -127,7 +131,7 @@ class NodeServiceTest {
     @DisplayName("노드 목록 조회 - 빈 목록 반환")
     fun `should return empty list when project has no nodes`() {
         // Given
-        val projectId = "project-1"
+        val projectId = 1L
 
         whenever(nodeRepository.findAllByProjectId(projectId))
             .thenReturn(emptyList())
@@ -148,7 +152,7 @@ class NodeServiceTest {
     @DisplayName("노드 생성 성공 - SCENE 타입")
     fun `should create scene node successfully`() {
         // Given
-        val projectId = "project-1"
+        val projectId = 1L
         val request = NodeRequest(
             title = "New Node",
             content = "New Content",
@@ -159,9 +163,8 @@ class NodeServiceTest {
         )
 
         val savedNode = Node(
-            id = "new-node-id",
             project = testProject,
-            authorId = testUser.id!!,
+            authorId = testUser.id!!.toString(),
             title = request.title,
             content = request.content,
             nodeType = request.nodeType,
@@ -170,7 +173,9 @@ class NodeServiceTest {
             version = 0,
             xOffset = request.xOffset,
             yOffset = request.yOffset
-        )
+        ).apply {
+            id = 2L
+        }
 
         whenever(projectService.getProjectById(projectId))
             .thenReturn(testProject)
@@ -182,7 +187,7 @@ class NodeServiceTest {
 
         // Then
         assertNotNull(result)
-        assertEquals("new-node-id", result.id)
+        assertEquals(2L, result.id)
         assertEquals("New Node", result.title)
         assertEquals("New Content", result.content)
         assertEquals(NodeType.SCENE, result.nodeType)
@@ -196,29 +201,30 @@ class NodeServiceTest {
     @DisplayName("노드 생성 성공 - ENTRY 타입")
     fun `should create entry node successfully`() {
         // Given
-        val projectId = "project-1"
+        val projectId = 1L
         val request = NodeRequest(
             title = "Entry Node",
             content = "Story begins here",
             nodeType = NodeType.ENTRY,
-            nextNodeId = "node-2",
+            nextNodeId = 2L,
             xOffset = 0,
             yOffset = 0
         )
 
         val savedNode = Node(
-            id = "entry-node-id",
             project = testProject,
-            authorId = testUser.id!!,
+            authorId = testUser.id!!.toString(),
             title = request.title,
             content = request.content,
             nodeType = NodeType.ENTRY,
-            nextNodeId = "node-2",
+            nextNodeId = 2L,
             originalNode = null,
             version = 0,
             xOffset = 0,
             yOffset = 0
-        )
+        ).apply {
+            id = 3L
+        }
 
         whenever(projectService.getProjectById(projectId))
             .thenReturn(testProject)
@@ -231,7 +237,7 @@ class NodeServiceTest {
         // Then
         assertNotNull(result)
         assertEquals(NodeType.ENTRY, result.nodeType)
-        assertEquals("node-2", result.nextNodeId)
+        assertEquals(2L, result.nextNodeId)
 
         verify(projectService, times(1)).getProjectById(projectId)
         verify(nodeRepository, times(1)).save(any<Node>())
@@ -241,7 +247,7 @@ class NodeServiceTest {
     @DisplayName("노드 생성 실패 - 존재하지 않는 프로젝트")
     fun `should fail to create node when project not found`() {
         // Given
-        val projectId = "non-existent-project"
+        val projectId = 999L
         val request = NodeRequest(
             title = "New Node",
             content = "New Content",
@@ -269,13 +275,13 @@ class NodeServiceTest {
     @DisplayName("노드 수정 성공")
     fun `should update node successfully`() {
         // Given
-        val projectId = "project-1"
-        val nodeId = "node-1"
+        val projectId = 1L
+        val nodeId = 1L
         val request = NodeRequest(
             title = "Updated Node",
             content = "Updated Content",
             nodeType = NodeType.BRANCH,
-            nextNodeId = "node-2",
+            nextNodeId = 2L,
             xOffset = 150,
             yOffset = 250
         )
@@ -303,8 +309,8 @@ class NodeServiceTest {
     @DisplayName("노드 수정 실패 - 존재하지 않는 노드")
     fun `should fail to update node when node not found`() {
         // Given
-        val projectId = "project-1"
-        val nodeId = "non-existent-node"
+        val projectId = 1L
+        val nodeId = 999L
         val request = NodeRequest(
             title = "Updated Node",
             content = "Updated Content",
@@ -330,13 +336,13 @@ class NodeServiceTest {
     @DisplayName("노드 수정 실패 - 권한 없음 (다른 사용자)")
     fun `should fail to update node when user is not author`() {
         // Given
-        val projectId = "project-1"
-        val nodeId = "node-1"
+        val projectId = 1L
+        val nodeId = 1L
         val otherUser = User(
             email = "other@example.com",
             nickname = "OtherUser"
         ).apply {
-            id = "other-user-id"
+            id = 2L
         }
         val request = NodeRequest(
             title = "Updated Node",
@@ -363,13 +369,13 @@ class NodeServiceTest {
     @DisplayName("노드 수정 성공 - 기본 업데이트")
     fun `should update node successfully with all fields`() {
         // Given
-        val projectId = "project-1"
-        val nodeId = "node-1"
+        val projectId = 1L
+        val nodeId = 1L
         val request = NodeRequest(
             title = "Node Updated",
             content = "Content Updated",
             nodeType = NodeType.BRANCH,
-            nextNodeId = "node-2",
+            nextNodeId = 2L,
             xOffset = 100,
             yOffset = 200
         )
